@@ -1,6 +1,10 @@
 const mongoose = require("mongoose");
-
-mongoose.connect("mongodb://localhost:27017/payU");
+const path = require("path");
+require("dotenv").config({ path: path.resolve(__dirname, "../.env") });
+mongoose
+  .connect(process.env.MONGO_URL)
+  .then(() => console.log("Connected to MongoDB"))
+  .catch((err) => console.error("Connection error", err));
 
 const userSchema = new mongoose.Schema({
   firstname: String,
