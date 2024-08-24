@@ -1,7 +1,7 @@
 const express = require("express");
 const z = require("zod");
 const jwt = require("jsonwebtoken");
-const { User } = require("../db");
+const { User, Account } = require("../db");
 const { JWT_TOKEN } = require("../config");
 const { authMiddleware } = require("./middleware");
 
@@ -27,20 +27,24 @@ const signInSchema = z.object({
 userRouter.post("/signup", async (req, res) => {
   const success = userSchema.safeParse(req.body);
   if (!success) {
-    res.json({ message: "Incorrect data" });
+    return res.json({ message: "Incorrect data" });
   }
 
   const userExists = await User.findOne({ username: req.body.username });
-  if (userExists._id) {
-    res.status(403).json({ message: "User already exists" });
+  if (userExists) {
+    return res.status(403).json({ message: "User already exists" });
   } else {
-    await User.create({
+    const user = await User.create({
       username: req.body.username,
       password: req.body.password,
       firstname: req.body.firstname,
       lastname: req.body.lastname,
     });
-    const token = jwt.sign(req.body, JWT_TOKEN);
+    await Account.create({
+      userId: user._id,
+      balance: 1 + Math.random() * 10000,
+    });
+    const token = jwt.sign({ userId: user._id }, JWT_TOKEN);
     res.status(201).json({ message: "User created successfully", token });
   }
 });
@@ -78,16 +82,27 @@ userRouter.put("/", async (req, res) => {
   res.json({ message: "User updated successfully", updatedUser });
 });
 
-userRouter.put("/bulk", async (req, res) => {
+userRouter.get("/bulk", async (req, res) => {
   const query = req.query.filter || "";
-  const users = await User.find({
-    $or: [{ firstname: { $regex: query } }, { lastname: { $regex: query } }],
-  }).map((user) => ({
-    username: user.username,
-    firstname: user.firstname,
-    lastname: user.lastname,
-    _id: user._id,
-  }));
+  let users = [];
+  if (!query) {
+    users = await User.find({})?.map((user) => ({
+      username: user.username,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      _id: user._id,
+    }));
+  } else {
+    users = await User.find({
+      $or: [{ firstname: { $regex: query } }, { lastname: { $regex: query } }],
+    }).map((user) => ({
+      username: user.username,
+      firstname: user.firstname,
+      lastname: user.lastname,
+      _id: user._id,
+    }));
+  }
+
   res.status(200).json({ users });
 });
 
