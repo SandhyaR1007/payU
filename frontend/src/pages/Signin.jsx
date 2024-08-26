@@ -5,6 +5,8 @@ import axios from "axios";
 import Heading from "../components/Heading";
 import SubHeading from "../components/SubHeading";
 import InputBox from "../components/Inputbox";
+import { useLocalStorage } from "../hooks/useLocalStorage";
+import { baseUrl } from "../apis/apiUtils";
 
 const Signin = () => {
   const [formInputs, setFormInputs] = useState({
@@ -12,6 +14,7 @@ const Signin = () => {
     password: "",
   });
   const navigate = useNavigate();
+  const { setLocalStorage } = useLocalStorage();
   const handleChange = (e) => {
     setFormInputs({ ...formInputs, [e.target.name]: e.target.value });
   };
@@ -19,11 +22,11 @@ const Signin = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3000/api/v1/user/signin", formInputs)
+      .post(`${baseUrl}user/signin`, formInputs)
       .then(function (response) {
         const token = response.data.token;
         if (token) {
-          sessionStorage.setItem("token", token);
+          setLocalStorage("token", token);
           return navigate("/dashboard");
         }
       })
