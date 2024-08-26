@@ -63,7 +63,7 @@ userRouter.post("/signin", async (req, res) => {
     password: body.password,
   });
   if (user) {
-    const token = jwt.sign(body, JWT_TOKEN);
+    const token = jwt.sign({ userId: user._id }, JWT_TOKEN);
     return res.status(200).json({ token });
   }
   res.status(401).json({ message: "Invalid credentials" });
@@ -83,12 +83,15 @@ userRouter.get("/bulk", async (req, res) => {
   const query = req.query.filter || "";
   let users = [];
   if (!query) {
-    users = await User.find({})?.map((user) => ({
-      username: user.username,
-      firstname: user.firstname,
-      lastname: user.lastname,
-      _id: user._id,
-    }));
+    users = await User.find({});
+    if (users && users.length) {
+      users = users.map((user) => ({
+        username: user.username,
+        firstname: user.firstname,
+        lastname: user.lastname,
+        _id: user._id,
+      }));
+    }
   } else {
     users = await User.find({
       $or: [{ firstname: { $regex: query } }, { lastname: { $regex: query } }],

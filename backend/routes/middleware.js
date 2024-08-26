@@ -9,6 +9,7 @@ const authMiddleware = (req, res, next) => {
   authToken = authToken.split(" ")[1];
   try {
     const decoded = jwt.verify(authToken, JWT_TOKEN);
+    console.log(decoded);
     if (decoded.userId) {
       req.userId = decoded.userId;
       next();
@@ -16,7 +17,7 @@ const authMiddleware = (req, res, next) => {
       res.status(401).json({ message: "Unauthorized access" });
     }
   } catch (error) {
-    res.status(401).json({ message: "Unauthorized access" });
+    res.status(401).json({ message: "Some error occurred" });
   }
 };
 
