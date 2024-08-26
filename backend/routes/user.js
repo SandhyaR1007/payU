@@ -49,8 +49,6 @@ userRouter.post("/signup", async (req, res) => {
   }
 });
 
-userRouter.use(authMiddleware);
-
 userRouter.post("/signin", async (req, res) => {
   const body = req.body;
   const success = signInSchema.safeParse({
@@ -66,12 +64,11 @@ userRouter.post("/signin", async (req, res) => {
   });
   if (user) {
     const token = jwt.sign(body, JWT_TOKEN);
-    res.json(200).json({ token });
-    return;
+    return res.status(200).json({ token });
   }
   res.status(401).json({ message: "Invalid credentials" });
 });
-
+userRouter.use(authMiddleware);
 userRouter.put("/", async (req, res) => {
   const body = req.body;
   const success = updatedUserSchema.parse(body);
