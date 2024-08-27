@@ -1,8 +1,9 @@
 const express = require("express");
 const z = require("zod");
 const jwt = require("jsonwebtoken");
+const bcrypt = require("bcrypt");
 const { User, Account } = require("../db");
-const { JWT_TOKEN } = require("../config");
+const { JWT_TOKEN, SALT } = require("../config");
 const { authMiddleware } = require("./middleware");
 
 const userRouter = express.Router();
@@ -34,9 +35,10 @@ userRouter.post("/signup", async (req, res) => {
   if (userExists) {
     return res.status(403).json({ message: "User already exists" });
   } else {
+    const password = await bcrypt.hash(req.body.password, SALT);
     const user = await User.create({
       username: req.body.username,
-      password: req.body.password,
+      password: password,
       firstname: req.body.firstname,
       lastname: req.body.lastname,
     });
@@ -58,13 +60,17 @@ userRouter.post("/signin", async (req, res) => {
   if (!success) {
     res.status(401).json({ message: "Invalid credentials" });
   }
+
   const user = await User.findOne({
     username: body.username,
-    password: body.password,
   });
+
   if (user) {
-    const token = jwt.sign({ userId: user._id }, JWT_TOKEN);
-    return res.status(200).json({ token });
+    const isValid = await bcrypt.compare(body.password, user.password);
+    if (isValid) {
+      const token = jwt.sign({ userId: user._id }, JWT_TOKEN);
+      return res.status(200).json({ token });
+    }
   }
   res.status(401).json({ message: "Invalid credentials" });
 });
