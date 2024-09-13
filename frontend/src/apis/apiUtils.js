@@ -1,6 +1,6 @@
 import axios from "axios";
 
-export const baseUrl = "http://localhost:3000/api/v1/";
+export const baseUrl = "http://localhost:8080/api/v1/";
 const signIn = async () => {};
 
 export const getAllUsers = async (token) => {

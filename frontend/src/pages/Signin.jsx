@@ -31,7 +31,7 @@ const Signin = () => {
         }
       })
       .catch(function (error) {
-        console.log(error);
+        console.log("Some error occurred", error);
       });
   };
   return (

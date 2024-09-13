@@ -5,6 +5,7 @@ import axios from "axios";
 import Heading from "../components/Heading";
 import SubHeading from "../components/SubHeading";
 import InputBox from "../components/Inputbox";
+import { baseUrl } from "../apis/apiUtils";
 
 const Signup = () => {
   const [formInputs, setFormInputs] = useState({
@@ -21,7 +22,7 @@ const Signup = () => {
   const handleSubmit = (e) => {
     e.preventDefault();
     axios
-      .post("http://localhost:3000/api/v1/user/signup", formInputs)
+      .post(`${baseUrl}user/signup`, formInputs)
       .then(function (response) {
         const token = response.data.token;
         if (token) {
