@@ -64,9 +64,7 @@ const Signup = () => {
             type="password"
             handleChange={handleChange}
           />
-          <button className="bg-gray-900 text-white p-3 rounded-md text-sm">
-            Sign up
-          </button>
+          <button className="btn">Sign up</button>
         </form>
       </main>
       <footer className="text-center">

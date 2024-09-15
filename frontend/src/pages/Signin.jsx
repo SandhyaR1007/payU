@@ -35,7 +35,7 @@ const Signin = () => {
       });
   };
   return (
-    <div className="max-w-sm m-auto mt-20 p-10 flex flex-col  gap-3 shadow-custom rounded-md">
+    <div className="max-w-sm m-auto mt-[10%] p-10 flex flex-col  gap-3 shadow-custom rounded-md">
       <header className="text-center">
         <Heading heading="Sign In" />
         <SubHeading text="Enter your information " />
@@ -54,9 +54,7 @@ const Signin = () => {
             type="password"
             handleChange={handleChange}
           />
-          <button className="bg-gray-900 text-white p-3 rounded-md text-sm">
-            Sign In
-          </button>
+          <button className="btn">Sign In</button>
         </form>
       </main>
       <footer className="text-center">
