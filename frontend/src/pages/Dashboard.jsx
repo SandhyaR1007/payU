@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Heading from "../components/Heading";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { getAllUsers } from "../apis/apiUtils";
+import Avatar from "../components/Avatar";
 
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
@@ -22,18 +23,24 @@ const Dashboard = () => {
     return () => {};
   }, []);
   return (
-    <div>
-      <nav>
-        <Heading heading="Payments App" />
-        <div>Profile</div>
+    <div className="">
+      <nav className="flex items-center py-3 px-10 justify-between shadow-md bg-violet-50">
+        <Heading heading="PayU" />
+        <div className="flex gap-3 items-center">
+          <span className="font-semibold"> Hello User</span>
+          <Avatar />
+        </div>
       </nav>
-      <main>
+      <main className="px-10 py-5">
         <section>Your Balance</section>
         <section>
           <h3>Users</h3>
           <div>
             {users.map((user) => (
-              <p key={user._id}>{user.firstname}</p>
+              <p key={user._id}>
+                <Avatar user={user.firstname} />
+                {user.firstname}
+              </p>
             ))}
           </div>
         </section>
