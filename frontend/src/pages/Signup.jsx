@@ -7,6 +7,8 @@ import SubHeading from "../components/SubHeading";
 import InputBox from "../components/Inputbox";
 import { baseUrl } from "../apis/apiUtils";
 
+import sj from "../assets/sj.jpg";
+
 const Signup = () => {
   const [formInputs, setFormInputs] = useState({
     firstname: "",
@@ -35,7 +37,7 @@ const Signup = () => {
       });
   };
   return (
-    <div className="max-w-sm m-auto mt-20 p-10 flex flex-col  gap-3 shadow-custom rounded-md">
+    <div className="max-w-sm m-auto mt-20 p-10 flex flex-col  gap-3 shadow-custom rounded-md ">
       <header className="text-center">
         <Heading heading="Sign Up" />
         <SubHeading text="Enter your information to create an account" />
