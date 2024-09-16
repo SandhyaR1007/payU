@@ -3,9 +3,11 @@ import Heading from "../components/Heading";
 import { useLocalStorage } from "../hooks/useLocalStorage";
 import { getAllUsers } from "../apis/apiUtils";
 import Avatar from "../components/Avatar";
+import User from "../components/User";
 
 const Dashboard = () => {
   const [users, setUsers] = useState([]);
+  const [query, setQuery] = useState("");
   const { getLocalStorage } = useLocalStorage();
   useEffect(() => {
     const token = getLocalStorage("token");
@@ -24,8 +26,8 @@ const Dashboard = () => {
   }, []);
   return (
     <div className="">
-      <nav className="flex items-center py-3 px-10 justify-between shadow-md bg-violet-50">
-        <Heading heading="PayU" />
+      <nav className="flex items-center py-3 px-10 justify-between shadow-sm ">
+        <Heading heading="ManaPay" />
         <div className="flex gap-3 items-center">
           <span className="font-semibold"> Hello User</span>
           <Avatar />
@@ -36,12 +38,26 @@ const Dashboard = () => {
         <section>
           <h3>Users</h3>
           <div>
-            {users.map((user) => (
-              <p key={user._id}>
-                <Avatar user={user.firstname} />
-                {user.firstname}
-              </p>
-            ))}
+            <input
+              className="w-full py-2 px-4 border border-neutral-200 outline-none rounded-md shadow-sm"
+              type="search"
+              name=""
+              id=""
+              placeholder="Search users..."
+              value={query}
+              onChange={(e) => {
+                setQuery(e.target.value);
+              }}
+            />
+          </div>
+          <div>
+            {users
+              .filter((u) =>
+                u.firstname.toLowerCase().includes(query.toLowerCase())
+              )
+              .map((user) => (
+                <User user={user} key={user._id} />
+              ))}
           </div>
         </section>
       </main>
